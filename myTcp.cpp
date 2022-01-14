@@ -171,6 +171,7 @@ void manyToMany::crea_conn_sock(int sock)
 {
     connect_clnt_sock.push_back(sock);
     thread t(&manyToMany::recv_msg, this, sock);
+    t.detach();
 }
 void manyToMany::run_recv_t()
 {
@@ -189,11 +190,13 @@ void manyToMany::run_recv_t()
 }
 void manyToMany::recv_msg(int sock)
 {
+    printf("recieve socket : %d\n", sock);
     int read_len;
     char message[100];
     printf("%d 에 대한 recv 진행..\n", sock);
     while(read_len=read(sock, message, sizeof(message)))
     {
+        printf("%d 에 대한 recv 진행..\n", sock);
         if(read_len==-1){
             printf("socket : %u에서 에러 발생\n", sock);
             return;
