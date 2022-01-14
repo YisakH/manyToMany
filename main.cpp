@@ -9,10 +9,16 @@ int main(int argc, char *argv[])
 
     manyToMany mymanyToMany = manyToMany(argv[1]);
     printf("%s\n", argv[1]);
-    
+
     mymanyToMany.server();
     sleep(0.1);
     //mymanyToMany.server();
     mymanyToMany.client(4);
+
+    string input = "";
+    while(input.compare("exit") != 0){
+        cin >> input;
+        cout << input << endl;
+    }
     return 0;
 }
