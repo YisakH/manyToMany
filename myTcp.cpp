@@ -106,6 +106,7 @@ void manyToMany::client(int number_of_client)
 void manyToMany::client_run(int index)
 {
     struct sockaddr_in addr;
+    string ip = server_ip[index];
 
     if (my_ip == ip)
         return;
@@ -128,6 +129,7 @@ void manyToMany::client_run(int index)
     {
         connected = false;
         printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
+        // 여기서부터 고쳐야 됨!!!!!!!!!!!!
         if (connect(clnt_sock[connect_cnt], (struct sockaddr *)&addr, sizeof(addr)) != -1){
             connected = true;
             connect_cnt++;
