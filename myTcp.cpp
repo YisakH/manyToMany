@@ -129,12 +129,12 @@ void manyToMany::client_run(int index)
 
     bool connected;
     
+    printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
     for (int i = 0; i < 10; i++)
     {
         if (has_ip(int_ip))
             return;
         connected = false;
-        printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
         
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1){
             connected = true;
@@ -168,12 +168,6 @@ void manyToMany::send_msg(char* msg)
     }
 }
 void manyToMany::crea_conn_sock(int sock)
-{
-    connect_clnt_sock.push_back(sock);
-    thread t(&manyToMany::recv_msg, this, sock);
-    t.detach();
-}
-void manyToMany::run_recv_t()
 {
     int read_len;
     vector<thread> recv_t;
