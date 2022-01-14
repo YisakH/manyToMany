@@ -164,7 +164,7 @@ void manyToMany::run_recv_t()
     }
     for(int i=0; i<4; i++)
     {
-        recv_t[i].join();
+        recv_t[i].detach();
     }
 }
 void manyToMany::recv_msg(int sock)

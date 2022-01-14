@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
     mymanyToMany.client(4);
 
     string input = "";
+
+    mymanyToMany.run_recv_t();
+
     while(input.compare("exit") != 0){
         cin >> input;
         cout << input << endl;
