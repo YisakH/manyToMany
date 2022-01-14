@@ -99,7 +99,7 @@ void manyToMany::client(int number_of_client)
 
     
     for (int i = 0; i < number_of_client; i++)
-        client_t[i].join();
+        client_t[i].detach();
 }
 
 void manyToMany::client_run(string ip)
@@ -121,10 +121,11 @@ void manyToMany::client_run(string ip)
     //printf("%d\n", connect_cnt);
     addr.sin_port = htons(atoi(port));
 
-    bool connected = false;
+    bool connected;
     
     for (int i = 0; i < 10; i++)
     {
+        connected = false;
         printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
         if (connect(clnt_sock[connect_cnt], (struct sockaddr *)&addr, sizeof(addr)) != -1){
             connected = true;
@@ -137,4 +138,7 @@ void manyToMany::client_run(string ip)
         cout << ip << " 연결 성공!!\n";
     else
         cout << ip << " 연결 실패..\n";
+
+
+    
 }
