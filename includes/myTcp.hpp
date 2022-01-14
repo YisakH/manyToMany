@@ -19,7 +19,7 @@ class manyToMany
     int serv_sock;
     vector<int> clnt_sock;
     int connect_cnt = 0;
-    vector<in_addr_t> clnt_vec;
+    vector<in_addr_t> connected_clnt_addr_list;
     string my_ip;
     const char* port = "40201";
     string server_ip[3] = {"192.168.0.23", "192.168.0.9", "192.168.0.10"};

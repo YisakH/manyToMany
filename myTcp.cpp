@@ -4,9 +4,9 @@
 
 bool manyToMany::has_ip(in_addr_t ip)
 {
-    for (int i=0; i< clnt_vec.size(); i++)
+    for (int i=0; i< connected_clnt_addr_list.size(); i++)
     {
-        if(clnt_vec[i] == ip)
+        if(connected_clnt_addr_list[i] == ip)
             return true;
     }
     return false;
@@ -76,10 +76,11 @@ void manyToMany::server_run()
 
         if (clnt_sock.back() == -1)
             error_handring("accept() error");
-        else if (has_ip(clnt_addr[connect_cnt].sin_addr.s_addr) == true)
+        else if (has_ip(clnt_addr[connect_cnt].sin_addr.s_addr) == true){
+            clnt_sock.pop_back();
             continue;
-
-        clnt_vec.push_back(clnt_addr[connect_cnt].sin_addr.s_addr);
+        }
+        connected_clnt_addr_list.push_back(clnt_addr[connect_cnt].sin_addr.s_addr);
         cout << "서버 :" << clnt_addr[connect_cnt].sin_addr.s_addr << " 연결됨" << endl;
         connect_cnt++;
         sleep(0.05);
@@ -114,8 +115,7 @@ void manyToMany::client_run(int index)
     //printf("%u\n", int_ip);
     
     
-    if (has_ip(int_ip))
-        return;
+    
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = int_ip;
     
@@ -127,6 +127,8 @@ void manyToMany::client_run(int index)
     
     for (int i = 0; i < 10; i++)
     {
+        if (has_ip(int_ip))
+            return;
         connected = false;
         printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
         
