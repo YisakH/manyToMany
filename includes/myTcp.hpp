@@ -19,7 +19,7 @@ class manyToMany
     int connect_cnt = 0;
     vector<in_addr_t> clnt_vec;
     string my_ip;
-    const char* port[4] = {"40201", "40202", "40203", "40204"};
+    const char* port = "40201";
     string server_ip[4] = {"192.168.0.100", "192.168.0.101", "192.168.0.102", "192.168.0.103"};
 
     struct sockaddr_in serv_addr;

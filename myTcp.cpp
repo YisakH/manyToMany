@@ -20,7 +20,7 @@ manyToMany::manyToMany(string my_ip)
 
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    serv_addr.sin_port = htons(atoi(port[connect_cnt]));
+    serv_addr.sin_port = htons(atoi(port));
 
     if (bind(serv_sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1)
         error_handring("bind() error");
@@ -119,7 +119,7 @@ void manyToMany::client_run(string ip)
     
     
     //printf("%d\n", connect_cnt);
-    addr.sin_port = htons(atoi(port[connect_cnt]));
+    addr.sin_port = htons(atoi(port));
 
     bool connected = false;
     
