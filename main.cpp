@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
 
     string input = "";
 
+
+    sleep(2000);
     mymanyToMany.run_recv_t();
 
     while(input.compare("exit") != 0){
