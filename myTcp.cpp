@@ -39,6 +39,8 @@ manyToMany::manyToMany(string my_ip)
     /*
     write(clnt_sock, message, sizeof(messages));
     */
+
+   
 }
 
 manyToMany::~manyToMany()
@@ -80,6 +82,7 @@ void manyToMany::server_run()
             clnt_sock.pop_back();
             continue;
         }
+        connect_clnt_sock.push_back(clnt_sock.back());
         connected_clnt_addr_list.push_back(clnt_addr[connect_cnt].sin_addr.s_addr);
         cout << "서버 :" << clnt_addr[connect_cnt].sin_addr.s_addr << " 연결됨" << endl;
         connect_cnt++;
@@ -134,6 +137,7 @@ void manyToMany::client_run(int index)
         
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1){
             connected = true;
+            connect_clnt_sock.push_back(clnt_sock[index]);
             connect_cnt++;
             break;
         }
@@ -147,16 +151,18 @@ void manyToMany::client_run(int index)
     else
         cout << ip << " 연결 실패..\n";
 
-
+    
+    
+    printf("소켓 수 : %d\n", clnt_sock.size());
     
 }
 
 void manyToMany::send_msg(char* msg)
 {
-    for(int i=0; i<NoOfNode-1; i++)
+    for(int i=0; i<connect_clnt_sock.size(); i++)
     {
         printf("%s 메시지 전송\n", msg);
-        write(clnt_sock[i], msg, sizeof(msg));
+        write(connect_clnt_sock[i], msg, sizeof(msg));
     }
 }
 
@@ -169,13 +175,10 @@ void manyToMany::run_recv_t()
         printf("%d ", clnt_sock[i]);
     printf("\n\n");
 
-    for (int i=0; i<connect_cnt; i++)
+    for (int i=0; i<connect_clnt_sock.size(); i++)
     {
-        recv_t.push_back(thread(&manyToMany::recv_msg, this, clnt_sock[i]));
-    }
-    for(int i=0; i<connect_cnt; i++)
-    {
-        recv_t[i].detach();
+        recv_t.push_back(thread(&manyToMany::recv_msg, this, connect_clnt_sock[i]));
+        recv_t.back().detach();
     }
 }
 void manyToMany::recv_msg(int sock)
@@ -187,7 +190,7 @@ void manyToMany::recv_msg(int sock)
     {
         if(read_len==-1){
             printf("socket : %u에서 에러 발생\n", sock);
-            error_handring("read() error");
+            return;
         }
         
         if(strcmp(message, "exit") == 0)

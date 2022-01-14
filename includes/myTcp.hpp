@@ -18,6 +18,7 @@ class manyToMany
 {
     int serv_sock;
     vector<int> clnt_sock;
+    vector<int> connect_clnt_sock;
     int connect_cnt = 0;
     vector<in_addr_t> connected_clnt_addr_list;
     string my_ip;
