@@ -38,7 +38,7 @@ public:
     bool has_ip(in_addr_t ip);
     void server_run();
     void client(int number_of_client);
-    void client_run(string ip);
+    void client_run(int index);
     void send_msg(char* msg);
     void run_recv_t();
     void recv_msg(int sock);

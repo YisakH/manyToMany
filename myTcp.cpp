@@ -94,7 +94,7 @@ void manyToMany::client(int number_of_client)
 
     for (int i = 0; i < number_of_client; i++)
     {
-        client_t.push_back(thread(&manyToMany::client_run, this, ref(server_ip[i])));
+        client_t.push_back(thread(&manyToMany::client_run, this, i));
         sleep(0.07);
     }
 
@@ -103,7 +103,7 @@ void manyToMany::client(int number_of_client)
         client_t[i].detach();
 }
 
-void manyToMany::client_run(string ip)
+void manyToMany::client_run(int index)
 {
     struct sockaddr_in addr;
 
