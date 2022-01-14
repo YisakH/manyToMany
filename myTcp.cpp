@@ -96,12 +96,12 @@ void manyToMany::client(int number_of_client)
     for (int i = 0; i < number_of_client-1; i++)
     {
         client_t.push_back(thread(&manyToMany::client_run, this, i));
+        client_t[i].detach();
         sleep(0.07);
     }
 
     
-    for (int i = 0; i < number_of_client; i++)
-        client_t[i].detach();
+    //for (int i = 0; i < number_of_client; i++)
 }
 
 void manyToMany::client_run(int index)
