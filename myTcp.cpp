@@ -171,6 +171,7 @@ void manyToMany::recv_msg(int sock)
 {
     int read_len;
     char message[100];
+    printf("%d 에 대한 recv 진행..", sock);
     while(read_len=read(sock, message, sizeof(message)))
     {
         if(read_len==-1)
