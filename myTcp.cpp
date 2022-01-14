@@ -30,9 +30,9 @@ manyToMany::manyToMany(string my_ip)
     */
     for (int i = 0; i < 4; i++)
     {
-        clnt_sock[i] = socket(PF_INET, SOCK_STREAM, 0);
+        clnt_sock.push_back(socket(PF_INET, SOCK_STREAM, 0));
 
-        if (clnt_sock[i] == -1)
+        if (clnt_sock.back() == -1)
             error_handring("socket() error\n");
     }
 
@@ -45,9 +45,10 @@ manyToMany::~manyToMany()
 {
     printf("모든 과정 종료합니다...\n");
     close(serv_sock);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < clnt_sock.size(); i++)
         close(clnt_sock[i]);
 
+    printf("생성된 모든 소켓은 %lu개 입니다.\n", clnt_sock.size());
 }
 
 void manyToMany::error_handring(string message)
@@ -72,9 +73,9 @@ void manyToMany::server_run()
     {
         printf("server에서 %d 포트로 accept 시도중...\n", serv_addr.sin_port);
         clnt_addr_size[connect_cnt] = sizeof(clnt_addr[connect_cnt]);
-        clnt_sock[connect_cnt] = accept(serv_sock, (struct sockaddr *)&clnt_addr[connect_cnt], &clnt_addr_size[connect_cnt]);
+        clnt_sock.push_back(accept(serv_sock, (struct sockaddr *)&clnt_addr[connect_cnt], &clnt_addr_size[connect_cnt]));
 
-        if (clnt_sock[connect_cnt] == -1)
+        if (clnt_sock.back() == -1)
             error_handring("accept() error");
         else if (has_ip(clnt_addr[connect_cnt].sin_addr.s_addr) == true)
             continue;
@@ -132,7 +133,9 @@ void manyToMany::client_run(string ip)
             connected = true;
             break;
         }
-        sleep(1000);
+        sleep(1);
+        if(has_ip(int_ip))
+            break;
     }
 
     if(connected)

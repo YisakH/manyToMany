@@ -15,7 +15,7 @@ using namespace std;
 class manyToMany
 {
     int serv_sock;
-    int clnt_sock[4];
+    vector<int> clnt_sock;
     int connect_cnt = 0;
     vector<in_addr_t> clnt_vec;
     string my_ip;
