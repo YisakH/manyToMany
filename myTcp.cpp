@@ -99,7 +99,7 @@ void manyToMany::client(int number_of_client)
 
     
     for (int i = 0; i < number_of_client; i++)
-        client_t[i].detach();
+        client_t[i].join();
 }
 
 void manyToMany::client_run(string ip)
