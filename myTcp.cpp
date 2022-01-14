@@ -153,7 +153,7 @@ void manyToMany::client_run(int index)
 
 void manyToMany::send_msg(char* msg)
 {
-    for(int i=0; i<NoOfNode; i++)
+    for(int i=0; i<NoOfNode-1; i++)
     {
         printf("%s 메시지 전송\n", msg);
         write(clnt_sock[i], msg, sizeof(msg));
