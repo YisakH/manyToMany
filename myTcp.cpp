@@ -1,10 +1,12 @@
 #include "myTcp.hpp"
 
+
+
 bool manyToMany::has_ip(in_addr_t ip)
 {
-    for (int i = 0; i < clnt_vec.size(); i++)
+    for (int i=0; i< clnt_vec.size(); i++)
     {
-        if (clnt_vec[i] == ip)
+        if(clnt_vec[i] == ip)
             return true;
     }
     return false;
@@ -82,6 +84,7 @@ void manyToMany::server_run()
     }
 }
 
+
 void manyToMany::client(int number_of_client)
 {
     thread *client_t;
@@ -94,6 +97,7 @@ void manyToMany::client(int number_of_client)
         sleep(0.07);
     }
 
+    
     for (int i = 0; i < number_of_client; i++)
         client_t[i].join();
 }
@@ -106,25 +110,35 @@ void manyToMany::client_run(string ip)
         return;
     in_addr_t int_ip = inet_addr(ip.c_str());
     //printf("%u\n", int_ip);
-
+    
+    
     if (has_ip(int_ip))
         return;
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = int_ip;
-
+    
+    
     //printf("%d\n", connect_cnt);
     addr.sin_port = htons(atoi(port));
 
-    bool connected = false;
-
-    printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
-    if (connect(clnt_sock[connect_cnt], (struct sockaddr *)&addr, sizeof(addr)) != -1)
+    bool connected;
+    
+    for (int i = 0; i < 10; i++)
     {
-        connected = true;
+        connected = false;
+        printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
+        if (connect(clnt_sock[connect_cnt], (struct sockaddr *)&addr, sizeof(addr)) != -1){
+            connected = true;
+            break;
+        }
+        sleep(1000);
     }
 
-    if (connected)
+    if(connected)
         cout << ip << " 연결 성공!!\n";
     else
         cout << ip << " 연결 실패..\n";
+
+
+    
 }
