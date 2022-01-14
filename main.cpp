@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     sleep(2);
 
     while(input.compare("exit") != 0){
-        cin >> input;
+        getline(cin, input);
         mymanyToMany.send_msg((char *)input.c_str());
         //cout << input << endl;
     }

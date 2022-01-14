@@ -161,10 +161,10 @@ void manyToMany::client_run(int index)
 
 void manyToMany::send_msg(char* msg)
 {
+    printf("전송하려는 메시지 크기는 %d바이트\n", strlen(msg));
     for(int i=0; i<connect_clnt_sock.size(); i++)
     {
-        printf("메시지 전송은 해 볼게\n");
-        write(connect_clnt_sock[i], msg, sizeof(msg));
+        write(connect_clnt_sock[i], msg, strlen(msg));
     }
 }
 void manyToMany::crea_conn_sock(int sock)
