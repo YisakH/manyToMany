@@ -18,7 +18,8 @@ int main(int argc, char *argv[])
     string input = "";
 
 
-    sleep(2000);
+    sleep(2);
+    printf("자고 일어났어요\n");
     mymanyToMany.run_recv_t();
 
     while(input.compare("exit") != 0){

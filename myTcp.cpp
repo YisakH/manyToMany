@@ -89,13 +89,12 @@ void manyToMany::server_run()
 
 void manyToMany::client(int number_of_client)
 {
-    thread *client_t;
+    vector<thread> client_t;
     printf("%d 개의 클라이언트를 생성합니다\n", number_of_client);
-    client_t = new thread[number_of_client];
 
     for (int i = 0; i < number_of_client; i++)
     {
-        client_t[i] = thread(&manyToMany::client_run, this, ref(server_ip[i]));
+        client_t.push_back(thread(&manyToMany::client_run, this, ref(server_ip[i])));
         sleep(0.07);
     }
 
@@ -158,11 +157,11 @@ void manyToMany::run_recv_t()
     int read_len;
     vector<thread> recv_t;
 
-    for (int i=0; i<4; i++)
+    for (int i=0; i<connect_cnt; i++)
     {
         recv_t.push_back(thread(&manyToMany::recv_msg, this, clnt_sock[i]));
     }
-    for(int i=0; i<4; i++)
+    for(int i=0; i<connect_cnt; i++)
     {
         recv_t[i].detach();
     }
@@ -171,7 +170,7 @@ void manyToMany::recv_msg(int sock)
 {
     int read_len;
     char message[100];
-    printf("%d 에 대한 recv 진행..", sock);
+    printf("%d 에 대한 recv 진행..\n", sock);
     while(read_len=read(sock, message, sizeof(message)))
     {
         if(read_len==-1)
