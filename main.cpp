@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
     while(input.compare("exit") != 0){
         cin >> input;
         mymanyToMany.send_msg((char *)input.c_str());
-        cout << input << endl;
+        //cout << input << endl;
     }
     return 0;
 }

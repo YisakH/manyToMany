@@ -169,19 +169,11 @@ void manyToMany::send_msg(char* msg)
 }
 void manyToMany::crea_conn_sock(int sock)
 {
-    int read_len;
-    vector<thread> recv_t;
-    printf("\n\n");
-    for (int i=0; i<clnt_sock.size(); i++)
-        printf("%d ", clnt_sock[i]);
-    printf("\n\n");
-
-    for (int i=0; i<connect_clnt_sock.size(); i++)
-    {
-        recv_t.push_back(thread(&manyToMany::recv_msg, this, connect_clnt_sock[i]));
-        recv_t.back().detach();
-    }
+    connect_clnt_sock.push_back(sock);
+    thread t(&manyToMany::recv_msg, this, sock);
+    t.detach();
 }
+
 void manyToMany::recv_msg(int sock)
 {
     printf("recieve socket : %d\n", sock);
