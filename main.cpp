@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     mymanyToMany.server();
     sleep(0.1);
     //mymanyToMany.server();
-    mymanyToMany.client(4);
+    mymanyToMany.client(NoOfNode);
 
     string input = "";
 
@@ -24,6 +24,7 @@ int main(int argc, char *argv[])
 
     while(input.compare("exit") != 0){
         cin >> input;
+        mymanyToMany.send_msg((char *)input.c_str());
         cout << input << endl;
     }
     return 0;

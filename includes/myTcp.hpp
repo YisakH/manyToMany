@@ -12,6 +12,8 @@
 
 using namespace std;
 
+#define NoOfNode 2
+
 class manyToMany
 {
     int serv_sock;
@@ -20,11 +22,11 @@ class manyToMany
     vector<in_addr_t> clnt_vec;
     string my_ip;
     const char* port = "40201";
-    string server_ip[4] = {"192.168.0.23", "192.168.0.9", "192.168.0.10"};
+    string server_ip[3] = {"192.168.0.23", "192.168.0.9", "192.168.0.10"};
 
     struct sockaddr_in serv_addr;
-    struct sockaddr_in clnt_addr[4];
-    socklen_t clnt_addr_size[4];
+    struct sockaddr_in clnt_addr[NoOfNode];
+    socklen_t clnt_addr_size[NoOfNode];
 
 
 

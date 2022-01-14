@@ -28,7 +28,7 @@ manyToMany::manyToMany(string my_ip)
     /*
     client socket 생성
     */
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < NoOfNode; i++)
     {
         clnt_sock.push_back(socket(PF_INET, SOCK_STREAM, 0));
 
@@ -129,7 +129,7 @@ void manyToMany::client_run(int index)
     {
         connected = false;
         printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
-        // 여기서부터 고쳐야 됨!!!!!!!!!!!!
+        
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1){
             connected = true;
             connect_cnt++;
@@ -151,8 +151,9 @@ void manyToMany::client_run(int index)
 
 void manyToMany::send_msg(char* msg)
 {
-    for(int i=0; i<4; i++)
+    for(int i=0; i<NoOfNode; i++)
     {
+        printf("%s 메시지 전송\n");
         write(clnt_sock[i], msg, sizeof(msg));
     }
 }
