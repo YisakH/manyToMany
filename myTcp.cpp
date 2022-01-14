@@ -28,7 +28,7 @@ manyToMany::manyToMany(string my_ip)
     /*
     client socket 생성
     */
-    for (int i = 0; i < NoOfNode; i++)
+    for (int i = 0; i < NoOfNode-1; i++)
     {
         clnt_sock.push_back(socket(PF_INET, SOCK_STREAM, 0));
 
@@ -91,9 +91,9 @@ void manyToMany::server_run()
 void manyToMany::client(int number_of_client)
 {
     vector<thread> client_t;
-    printf("%d 개의 클라이언트를 생성합니다\n", number_of_client);
+    printf("%d 개의 클라이언트를 생성합니다\n", number_of_client-1);
 
-    for (int i = 0; i < number_of_client; i++)
+    for (int i = 0; i < number_of_client-1; i++)
     {
         client_t.push_back(thread(&manyToMany::client_run, this, i));
         sleep(0.07);
@@ -155,7 +155,7 @@ void manyToMany::send_msg(char* msg)
 {
     for(int i=0; i<NoOfNode; i++)
     {
-        printf("%s 메시지 전송\n");
+        printf("%s 메시지 전송\n", msg);
         write(clnt_sock[i], msg, sizeof(msg));
     }
 }
@@ -164,6 +164,10 @@ void manyToMany::run_recv_t()
 {
     int read_len;
     vector<thread> recv_t;
+    printf("\n\n");
+    for (int i=0; i<clnt_sock.size(); i++)
+        printf("%d ", clnt_sock[i]);
+    printf("\n\n");
 
     for (int i=0; i<connect_cnt; i++)
     {
@@ -181,8 +185,10 @@ void manyToMany::recv_msg(int sock)
     printf("%d 에 대한 recv 진행..\n", sock);
     while(read_len=read(sock, message, sizeof(message)))
     {
-        if(read_len==-1)
+        if(read_len==-1){
+            printf("socket : %u에서 에러 발생\n", sock);
             error_handring("read() error");
+        }
         
         if(strcmp(message, "exit") == 0)
         {
