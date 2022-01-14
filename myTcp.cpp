@@ -71,7 +71,6 @@ void manyToMany::server_run()
 
     while (true)
     {
-        printf("server에서 %d 포트로 accept 시도중...\n", serv_addr.sin_port);
         clnt_addr_size[connect_cnt] = sizeof(clnt_addr[connect_cnt]);
         clnt_sock.push_back(accept(serv_sock, (struct sockaddr *)&clnt_addr[connect_cnt], &clnt_addr_size[connect_cnt]));
 
@@ -131,6 +130,7 @@ void manyToMany::client_run(string ip)
         printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
         if (connect(clnt_sock[connect_cnt], (struct sockaddr *)&addr, sizeof(addr)) != -1){
             connected = true;
+            connect_cnt++;
             break;
         }
         sleep(1);
