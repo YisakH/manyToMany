@@ -159,9 +159,9 @@ void manyToMany::client_run(int index)
 
 void manyToMany::send_msg(char* msg)
 {
+    printf("메시지 전송은 해 볼게\n");
     for(int i=0; i<connect_clnt_sock.size(); i++)
     {
-        printf("수신 메시지 : %s\n", msg);
         write(connect_clnt_sock[i], msg, sizeof(msg));
     }
 }
@@ -196,7 +196,7 @@ void manyToMany::recv_msg(int sock)
         if(strcmp(message, "exit") == 0)
         {
             printf("종료 메시지 수신. 종료합니다...\n");
-            return;
+            exit(0);
         }
 
         printf("%s\n", message);
