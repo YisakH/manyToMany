@@ -50,7 +50,7 @@ manyToMany::~manyToMany()
     for (int i = 0; i < clnt_sock.size(); i++)
         close(clnt_sock[i]);
 
-    printf("생성된 모든 소켓은 %lu개 입니다.\n", clnt_sock.size());
+    printf("생성된 모든 소켓은 %lu개 입니다.\n", connect_clnt_sock.size());
 }
 
 void manyToMany::error_handring(string message)
@@ -161,7 +161,7 @@ void manyToMany::send_msg(char* msg)
 {
     for(int i=0; i<connect_clnt_sock.size(); i++)
     {
-        printf("%s 메시지 전송\n", msg);
+        printf("수신 메시지 : %s\n", msg);
         write(connect_clnt_sock[i], msg, sizeof(msg));
     }
 }
