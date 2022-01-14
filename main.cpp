@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
 
     sleep(2);
     printf("자고 일어났어요\n");
-    mymanyToMany.run_recv_t();
+    //mymanyToMany.user_recv();
 
     while(input.compare("exit") != 0){
         cin >> input;

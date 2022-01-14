@@ -82,7 +82,8 @@ void manyToMany::server_run()
             clnt_sock.pop_back();
             continue;
         }
-        connect_clnt_sock.push_back(clnt_sock.back());
+        crea_conn_sock(clnt_sock.back());
+        //connect_clnt_sock.push_back(clnt_sock.back());
         connected_clnt_addr_list.push_back(clnt_addr[connect_cnt].sin_addr.s_addr);
         cout << "서버 :" << clnt_addr[connect_cnt].sin_addr.s_addr << " 연결됨" << endl;
         connect_cnt++;
@@ -137,7 +138,8 @@ void manyToMany::client_run(int index)
         
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1){
             connected = true;
-            connect_clnt_sock.push_back(clnt_sock[index]);
+            crea_conn_sock(clnt_sock[index]);
+            //connect_clnt_sock.push_back(clnt_sock[index]);
             connect_cnt++;
             break;
         }
@@ -159,13 +161,17 @@ void manyToMany::client_run(int index)
 
 void manyToMany::send_msg(char* msg)
 {
-    printf("메시지 전송은 해 볼게\n");
     for(int i=0; i<connect_clnt_sock.size(); i++)
     {
+        printf("메시지 전송은 해 볼게\n");
         write(connect_clnt_sock[i], msg, sizeof(msg));
     }
 }
-
+void manyToMany::crea_conn_sock(int sock)
+{
+    connect_clnt_sock.push_back(sock);
+    thread t(&manyToMany::recv_msg, this, sock);
+}
 void manyToMany::run_recv_t()
 {
     int read_len;

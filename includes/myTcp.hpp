@@ -45,5 +45,6 @@ public:
     void send_msg(char* msg);
     void run_recv_t();
     void recv_msg(int sock);
+    void crea_conn_sock(int sock);
     
 };
