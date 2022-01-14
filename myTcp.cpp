@@ -43,9 +43,11 @@ manyToMany::manyToMany(string my_ip)
 
 manyToMany::~manyToMany()
 {
+    printf("모든 과정 종료합니다...\n");
     close(serv_sock);
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 4; i++)
         close(clnt_sock[i]);
+
 }
 
 void manyToMany::error_handring(string message)
@@ -141,4 +143,45 @@ void manyToMany::client_run(string ip)
 
 
     
+}
+
+void manyToMany::send_msg(char* msg)
+{
+    for(int i=0; i<4; i++)
+    {
+        write(clnt_sock[i], msg, sizeof(msg));
+    }
+}
+
+void manyToMany::run_recv_t()
+{
+    int read_len;
+    vector<thread> recv_t;
+
+    for (int i=0; i<4; i++)
+    {
+        recv_t.push_back(thread(&manyToMany::recv_msg, this, clnt_sock[i]));
+    }
+    for(int i=0; i<4; i++)
+    {
+        recv_t[i].join();
+    }
+}
+void manyToMany::recv_msg(int sock)
+{
+    int read_len;
+    char message[100];
+    while(read_len=read(sock, message, sizeof(message)))
+    {
+        if(read_len==-1)
+            error_handring("read() error");
+        
+        if(strcmp(message, "exit") == 0)
+        {
+            printf("종료 메시지 수신. 종료합니다...\n");
+            return;
+        }
+
+        printf("%s\n", message);
+    }
 }

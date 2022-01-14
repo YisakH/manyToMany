@@ -39,5 +39,8 @@ public:
     void server_run();
     void client(int number_of_client);
     void client_run(string ip);
+    void send_msg(char* msg);
+    void run_recv_t();
+    void recv_msg(int sock);
     
 };
