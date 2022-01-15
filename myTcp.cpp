@@ -161,7 +161,6 @@ void manyToMany::client_run(int index)
 
 void manyToMany::send_msg(char* msg)
 {
-    printf("전송하려는 메시지 크기는 %d바이트\n", strlen(msg));
     for(int i=0; i<connect_clnt_sock.size(); i++)
     {
         write(connect_clnt_sock[i], msg, strlen(msg));
@@ -182,7 +181,6 @@ void manyToMany::recv_msg(int sock)
     printf("%d 에 대한 recv 진행..\n", sock);
     while(read_len=read(sock, message, sizeof(message)))
     {
-        printf("%d 에 대한 recv 진행..\n", sock);
         if(read_len==-1){
             printf("socket : %u에서 에러 발생\n", sock);
             return;
