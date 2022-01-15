@@ -97,7 +97,7 @@ void manyToMany::client(int number_of_client)
     vector<thread> client_t;
     printf("%d 개의 클라이언트를 생성합니다\n", number_of_client-1);
 
-    for (int i = 0; i < number_of_client-1; i++)
+    for (int i = 0; i < number_of_client; i++)
     {
         client_t.push_back(thread(&manyToMany::client_run, this, i));
         client_t[i].detach();
