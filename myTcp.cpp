@@ -1,12 +1,10 @@
 #include "myTcp.hpp"
 
-
-
 bool manyToMany::has_ip(in_addr_t ip)
 {
-    for (int i=0; i< connected_clnt_addr_list.size(); i++)
+    for (int i = 0; i < connected_clnt_addr_list.size(); i++)
     {
-        if(connected_clnt_addr_list[i] == ip)
+        if (connected_clnt_addr_list[i] == ip)
             return true;
     }
     return false;
@@ -28,7 +26,7 @@ manyToMany::manyToMany(string my_ip)
     /*
     client socket 생성
     */
-    for (int i = 0; i < NoOfNode-1; i++)
+    for (int i = 0; i < NoOfNode - 1; i++)
     {
         clnt_sock.push_back(socket(PF_INET, SOCK_STREAM, 0));
 
@@ -39,8 +37,6 @@ manyToMany::manyToMany(string my_ip)
     /*
     write(clnt_sock, message, sizeof(messages));
     */
-
-   
 }
 
 manyToMany::~manyToMany()
@@ -68,17 +64,18 @@ void manyToMany::server()
 }
 void manyToMany::server_run()
 {
-    if (listen(serv_sock, 5) == -1)
-        error_handring("listen() error");
-
     while (true)
     {
+        if (listen(serv_sock, 5) == -1)
+            error_handring("listen() error");
+
         clnt_addr_size[connect_cnt] = sizeof(clnt_addr[connect_cnt]);
         clnt_sock.push_back(accept(serv_sock, (struct sockaddr *)&clnt_addr[connect_cnt], &clnt_addr_size[connect_cnt]));
 
         if (clnt_sock.back() == -1)
             error_handring("accept() error");
-        else if (has_ip(clnt_addr[connect_cnt].sin_addr.s_addr) == true){
+        else if (has_ip(clnt_addr[connect_cnt].sin_addr.s_addr) == true)
+        {
             clnt_sock.pop_back();
             continue;
         }
@@ -91,11 +88,10 @@ void manyToMany::server_run()
     }
 }
 
-
 void manyToMany::client(int number_of_client)
 {
     vector<thread> client_t;
-    printf("%d 개의 클라이언트를 생성합니다\n", number_of_client-1);
+    printf("%d 개의 클라이언트를 생성합니다\n", number_of_client - 1);
 
     for (int i = 0; i < number_of_client; i++)
     {
@@ -104,7 +100,6 @@ void manyToMany::client(int number_of_client)
         sleep(0.07);
     }
 
-    
     //for (int i = 0; i < number_of_client; i++)
 }
 
@@ -117,51 +112,47 @@ void manyToMany::client_run(int index)
         return;
     in_addr_t int_ip = inet_addr(ip.c_str());
     //printf("%u\n", int_ip);
-    
-    
-    
+
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = int_ip;
-    
-    
+
     //printf("%d\n", connect_cnt);
     addr.sin_port = htons(atoi(port));
 
     bool connected;
-    
+
     printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
     for (int i = 0; i < 10; i++)
     {
         if (has_ip(int_ip))
             return;
         connected = false;
-        
-        if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1){
+
+        if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1)
+        {
             connected = true;
             crea_conn_sock(clnt_sock[index]);
             //connect_clnt_sock.push_back(clnt_sock[index]);
             connect_cnt++;
+            connected_clnt_addr_list.push_back(int_ip);
             break;
         }
         sleep(1);
-        if(has_ip(int_ip))
+        if (has_ip(int_ip))
             break;
     }
 
-    if(connected)
+    if (connected)
         cout << ip << " 연결 성공!!\n";
     else
         cout << ip << " 연결 실패..\n";
 
-    
-    
     printf("소켓 수 : %d\n", clnt_sock.size());
-    
 }
 
-void manyToMany::send_msg(char* msg)
+void manyToMany::send_msg(char *msg)
 {
-    for(int i=0; i<connect_clnt_sock.size(); i++)
+    for (int i = 0; i < connect_clnt_sock.size(); i++)
     {
         write(connect_clnt_sock[i], msg, strlen(msg));
     }
@@ -179,14 +170,15 @@ void manyToMany::recv_msg(int sock)
     int read_len;
     char message[100];
     printf("%d 에 대한 recv 진행..\n", sock);
-    while(read_len=read(sock, message, sizeof(message)))
+    while (read_len = read(sock, message, sizeof(message)))
     {
-        if(read_len==-1){
+        if (read_len == -1)
+        {
             printf("socket : %u에서 에러 발생\n", sock);
             return;
         }
-        
-        if(strcmp(message, "exit") == 0)
+
+        if (strcmp(message, "exit") == 0)
         {
             printf("종료 메시지 수신. 종료합니다...\n");
             exit(0);
