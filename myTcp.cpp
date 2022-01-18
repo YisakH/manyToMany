@@ -70,16 +70,15 @@ void manyToMany::server_run()
             error_handring("listen() error");
 
         clnt_addr_size[connect_cnt] = sizeof(clnt_addr[connect_cnt]);
-        clnt_sock.push_back(accept(serv_sock, (struct sockaddr *)&clnt_addr[connect_cnt], &clnt_addr_size[connect_cnt]));
+        int tmp_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr[connect_cnt], &clnt_addr_size[connect_cnt]);
 
-        if (clnt_sock.back() == -1)
+        if (tmp_sock == -1)
             error_handring("accept() error");
         else if (has_ip(clnt_addr[connect_cnt].sin_addr.s_addr) == true)
         {
-            clnt_sock.pop_back();
             continue;
         }
-        crea_conn_sock(clnt_sock.back());
+        crea_conn_sock(tmp_sock);
         //connect_clnt_sock.push_back(clnt_sock.back());
         connected_clnt_addr_list.push_back(clnt_addr[connect_cnt].sin_addr.s_addr);
         cout << "서버 :" << clnt_addr[connect_cnt].sin_addr.s_addr << " 연결됨" << endl;
