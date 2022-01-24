@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
 
     mymanyToMany.server();
     sleep(0.1);
-    //mymanyToMany.server();
     mymanyToMany.client(NoOfNode);
 
 
@@ -21,10 +20,10 @@ int main(int argc, char *argv[])
 
     sleep(2);
 
-    while(input.compare("exit") != 0){
+    while(true){
         getline(cin, input);
         mymanyToMany.send_msg((char *)input.c_str());
-        //cout << input << endl;
     }
+
     return 0;
 }

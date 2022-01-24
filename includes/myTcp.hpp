@@ -17,6 +17,7 @@ using namespace std;
 
 class manyToMany
 {
+private:
     mutex m;
     int serv_sock;
     vector<int> clnt_sock; // 클래스 생성시 N-1개의 소켓 생성
@@ -32,21 +33,20 @@ class manyToMany
     struct sockaddr_in clnt_addr[NoOfNode];
     socklen_t clnt_addr_size[NoOfNode];
 
+    void exit_call();
+    void error_handring(string message);
+    bool has_ip(in_addr_t ip);
+    void server_run();
+    void client_run(int index);
+    bool crea_conn_sock(int sock, in_addr_t ip);
 
 
 public:
     manyToMany(std::string ip);
     ~manyToMany();
 
-    void error_handring(string message);
-
     void server();
-    bool has_ip(in_addr_t ip);
-    void server_run();
     void client(int number_of_client);
-    void client_run(int index);
     void send_msg(char* msg);
     void recv_msg(int sock);
-    bool crea_conn_sock(int sock, in_addr_t ip);
-    
 };

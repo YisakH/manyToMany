@@ -45,6 +45,22 @@ manyToMany::~manyToMany()
     printf("생성된 모든 소켓은 %lu개 입니다.\n", connect_clnt_sock.size());
 }
 
+void manyToMany::exit_call()
+{
+    printf("종료 메시지 수신...\n");
+
+    close(serv_sock);
+    for (int i = 0; i < clnt_sock.size(); i++)
+        close(clnt_sock[i]);
+    
+    for (int j=0; j<connect_clnt_sock.size(); j++)
+        close(connect_clnt_sock[j]);
+
+    printf("생성된 모든 소켓은 %lu개 입니다.\n", connect_clnt_sock.size());
+
+    exit(0);
+}
+
 void manyToMany::error_handring(string message)
 {
     cout << message << endl;
@@ -127,16 +143,13 @@ void manyToMany::client_run(int index)
         }
         sleep(1);
     }
-    
-    /*
-    else
-        cout << ip << " 연결 실패..\n";
-
-    printf("소켓 수 : %d\n", clnt_sock.size());*/
 }
 
 void manyToMany::send_msg(char *msg)
 {
+    if(strcmp(msg, "exit") == 0)
+        exit_call();
+
     for (int i = 0; i < connect_clnt_sock.size(); i++)
     {
         write(connect_clnt_sock[i], msg, strlen(msg));
@@ -174,8 +187,7 @@ void manyToMany::recv_msg(int sock)
 
         if (strcmp(message, "exit") == 0)
         {
-            printf("종료 메시지 수신. 종료합니다...\n");
-            exit(0);
+            exit_call();
         }
 
         printf("%s\n", message);
