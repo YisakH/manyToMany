@@ -72,7 +72,6 @@ void manyToMany::server_run()
             error_handring("accept() error");
         
         if(crea_conn_sock(tmp_sock, clnt_addr[connect_cnt].sin_addr.s_addr)){
-            cout << "서버 :" << clnt_addr[connect_cnt].sin_addr.s_addr << " 연결됨" << endl;
             connect_cnt++;
         }
         sleep(0.05);
@@ -163,10 +162,8 @@ bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
 
 void manyToMany::recv_msg(int sock)
 {
-    printf("recieve socket : %d\n", sock);
     int read_len;
     char message[100];
-    printf("%d 에 대한 recv 진행..\n", sock);
     while (read_len = read(sock, message, sizeof(message)))
     {
         if (read_len == -1)
