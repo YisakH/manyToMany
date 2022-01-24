@@ -147,13 +147,13 @@ void manyToMany::client_run(int index)
 
 void manyToMany::send_msg(char *msg)
 {
-    if(strcmp(msg, "exit") == 0)
-        exit_call();
-
     for (int i = 0; i < connect_clnt_sock.size(); i++)
     {
         write(connect_clnt_sock[i], msg, strlen(msg));
     }
+    
+    if(strcmp(msg, "exit") == 0)
+        exit_call();
 }
 bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
 {
