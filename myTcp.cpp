@@ -90,7 +90,7 @@ void manyToMany::server_run()
         if(crea_conn_sock(tmp_sock, clnt_addr[connect_cnt].sin_addr.s_addr)){
             connect_cnt++;
         }
-        sleep(0.05);
+        sleep(0.1);
     }
 }
 
@@ -135,7 +135,7 @@ void manyToMany::client_run(int index)
         {
 
             if(crea_conn_sock(clnt_sock[index], int_ip)){
-                printf("%s 연결 성공!!\n", ip.c_str());
+                //printf("%s 연결 성공!!\n", ip.c_str());
                 connect_cnt++;
             }
             //connect_clnt_sock.push_back(clnt_sock[index]);
@@ -166,6 +166,8 @@ bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
     connected_clnt_addr_list.push_back(ip);
     connect_clnt_sock.push_back(sock);
     m.unlock();
+
+    printf("%s 연결 성공!!\n", inet_ntop);
 
     thread t(&manyToMany::recv_msg, this, sock);
     t.detach();
