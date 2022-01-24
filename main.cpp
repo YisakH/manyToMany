@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    manyToMany mymanyToMany = manyToMany(argv[1]);
+    manyToMany mymanyToMany(argv[1]);
     printf("%s\n", argv[1]);
 
     mymanyToMany.server();
