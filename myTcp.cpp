@@ -182,5 +182,6 @@ void manyToMany::recv_msg(int sock)
         }
 
         printf("%s\n", message);
+        memset(message, 0x00, sizeof(message));
     }
 }
