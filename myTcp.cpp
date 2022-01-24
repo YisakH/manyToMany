@@ -33,10 +33,6 @@ manyToMany::manyToMany(string my_ip)
         if (clnt_sock.back() == -1)
             error_handring("socket() error\n");
     }
-
-    /*
-    write(clnt_sock, message, sizeof(messages));
-    */
 }
 
 manyToMany::~manyToMany()
@@ -143,10 +139,12 @@ void manyToMany::client_run(int index)
 
     if (connected)
         cout << ip << " 연결 성공!!\n";
+    
+    /*
     else
         cout << ip << " 연결 실패..\n";
 
-    printf("소켓 수 : %d\n", clnt_sock.size());
+    printf("소켓 수 : %d\n", clnt_sock.size());*/
 }
 
 void manyToMany::send_msg(char *msg)
