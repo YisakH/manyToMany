@@ -70,15 +70,11 @@ void manyToMany::server_run()
 
         if (tmp_sock == -1)
             error_handring("accept() error");
-        else if (has_ip(clnt_addr[connect_cnt].sin_addr.s_addr) == true)
-        {
-            continue;
+        
+        if(crea_conn_sock(tmp_sock, clnt_addr[connect_cnt].sin_addr.s_addr)){
+            cout << "서버 :" << clnt_addr[connect_cnt].sin_addr.s_addr << " 연결됨" << endl;
+            connect_cnt++;
         }
-        crea_conn_sock(tmp_sock);
-        //connect_clnt_sock.push_back(clnt_sock.back());
-        connected_clnt_addr_list.push_back(clnt_addr[connect_cnt].sin_addr.s_addr);
-        cout << "서버 :" << clnt_addr[connect_cnt].sin_addr.s_addr << " 연결됨" << endl;
-        connect_cnt++;
         sleep(0.05);
     }
 }
@@ -119,26 +115,19 @@ void manyToMany::client_run(int index)
     printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
     for (int i = 0; i < 10; i++)
     {
-        if (has_ip(int_ip))
-            return;
-        connected = false;
 
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1)
         {
-            connected = true;
-            crea_conn_sock(clnt_sock[index]);
+
+            if(crea_conn_sock(clnt_sock[index], int_ip)){
+                printf("%s 연결 성공!!\n", ip.c_str());
+                connect_cnt++;
+            }
             //connect_clnt_sock.push_back(clnt_sock[index]);
-            connect_cnt++;
-            connected_clnt_addr_list.push_back(int_ip);
             break;
         }
         sleep(1);
-        if (has_ip(int_ip))
-            break;
     }
-
-    if (connected)
-        cout << ip << " 연결 성공!!\n";
     
     /*
     else
@@ -154,11 +143,22 @@ void manyToMany::send_msg(char *msg)
         write(connect_clnt_sock[i], msg, strlen(msg));
     }
 }
-void manyToMany::crea_conn_sock(int sock)
+bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
 {
+    m.lock();
+
+    if(has_ip(ip)){
+        m.unlock();
+        return false;
+    }
+    connected_clnt_addr_list.push_back(ip);
     connect_clnt_sock.push_back(sock);
+    m.unlock();
+
     thread t(&manyToMany::recv_msg, this, sock);
     t.detach();
+    
+    return true;
 }
 
 void manyToMany::recv_msg(int sock)

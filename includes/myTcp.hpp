@@ -9,6 +9,7 @@
 #include <thread>
 #include <vector>
 #include <map>
+#include <mutex>
 
 using namespace std;
 
@@ -16,6 +17,7 @@ using namespace std;
 
 class manyToMany
 {
+    mutex m;
     int serv_sock;
     vector<int> clnt_sock; // 클래스 생성시 N-1개의 소켓 생성
     vector<int> connect_clnt_sock; // 실제 연결된 소켓 리스트
@@ -45,6 +47,6 @@ public:
     void client_run(int index);
     void send_msg(char* msg);
     void recv_msg(int sock);
-    void crea_conn_sock(int sock);
+    bool crea_conn_sock(int sock, in_addr_t ip);
     
 };
