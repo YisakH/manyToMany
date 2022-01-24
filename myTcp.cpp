@@ -167,7 +167,8 @@ bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
     connect_clnt_sock.push_back(sock);
     m.unlock();
 
-    printf("%s 연결 성공!!\n", inet_ntop);
+    char str[20];
+    printf("%s 연결 성공!!\n", inet_ntop(AF_INET, &ip, str, sizeof(str)));
 
     thread t(&manyToMany::recv_msg, this, sock);
     t.detach();
