@@ -46,5 +46,5 @@ public:
     void server();
     void client(int number_of_client);
     void send_msg(char* msg);
-    void recv_msg(int sock);
+    void recv_msg(int sock, char *ip);
 };
