@@ -76,6 +76,7 @@ void manyToMany::server()
 }
 void manyToMany::server_run()
 {
+    vector<sockaddr_in> v;
     while (true)
     {
         if (listen(serv_sock, 5) == -1)
@@ -133,7 +134,6 @@ void manyToMany::client_run(int index)
 
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1)
         {
-
             if(crea_conn_sock(clnt_sock[index], int_ip)){
                 //printf("%s 연결 성공!!\n", ip.c_str());
                 connect_cnt++;
