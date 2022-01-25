@@ -76,21 +76,22 @@ void manyToMany::server()
 }
 void manyToMany::server_run()
 {
-    vector<sockaddr_in> v;
     while (true)
     {
+        struct sockaddr_in clnt_addr;
+        socklen_t clnt_addr_size;
+
         if (listen(serv_sock, 5) == -1)
             error_handring("listen() error");
 
-        clnt_addr_size[connect_cnt] = sizeof(clnt_addr[connect_cnt]);
-        int tmp_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr[connect_cnt], &clnt_addr_size[connect_cnt]);
+        clnt_addr_size = sizeof(clnt_addr);
+        int tmp_sock = accept(serv_sock, (struct sockaddr *)&clnt_addr, &clnt_addr_size);
 
         if (tmp_sock == -1)
             error_handring("accept() error");
         
-        if(crea_conn_sock(tmp_sock, clnt_addr[connect_cnt].sin_addr.s_addr)){
-            connect_cnt++;
-        }
+        crea_conn_sock(tmp_sock, clnt_addr.sin_addr.s_addr);
+
         sleep(0.1);
     }
 }
@@ -123,7 +124,6 @@ void manyToMany::client_run(int index)
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = int_ip;
 
-    //printf("%d\n", connect_cnt);
     addr.sin_port = htons(atoi(port));
 
     bool connected;
@@ -134,11 +134,7 @@ void manyToMany::client_run(int index)
 
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1)
         {
-            if(crea_conn_sock(clnt_sock[index], int_ip)){
-                //printf("%s 연결 성공!!\n", ip.c_str());
-                connect_cnt++;
-            }
-            //connect_clnt_sock.push_back(clnt_sock[index]);
+            crea_conn_sock(clnt_sock[index], int_ip);
             break;
         }
         sleep(1);
