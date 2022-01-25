@@ -74,6 +74,7 @@ void manyToMany::server()
     server_t.detach();
     //server_t.join();
 }
+
 void manyToMany::server_run()
 {
     while (true)
@@ -129,7 +130,7 @@ void manyToMany::client_run(int index)
     bool connected;
 
     printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 100; i++)
     {
 
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1)
@@ -137,7 +138,7 @@ void manyToMany::client_run(int index)
             crea_conn_sock(clnt_sock[index], int_ip);
             break;
         }
-        sleep(1);
+        sleep(0.2);
     }
 }
 
@@ -151,6 +152,7 @@ void manyToMany::send_msg(char *msg)
     if(strcmp(msg, "exit") == 0)
         exit_call();
 }
+
 bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
 {
     m.lock();
@@ -163,16 +165,17 @@ bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
     connect_clnt_sock.push_back(sock);
     m.unlock();
 
-    char str[20];
-    printf("%s 연결 성공!!\n", inet_ntop(AF_INET, &ip, str, sizeof(str)));
+    char str[30];
+    printf("%s, sock : %u에 연결 성공!!\n", inet_ntop(AF_INET, &ip, str, sizeof(str)), sock);
+    //printf("%s\n", str);
 
-    thread t(&manyToMany::recv_msg, this, sock);
+    thread t(&manyToMany::recv_msg, this, sock, str);
     t.detach();
     
     return true;
 }
 
-void manyToMany::recv_msg(int sock)
+void manyToMany::recv_msg(int sock, char * ip)
 {
     int read_len;
     char message[100];
@@ -189,7 +192,7 @@ void manyToMany::recv_msg(int sock)
             exit_call();
         }
 
-        printf("%s\n", message);
+        printf("%s : %s\n", ip, message);
         memset(message, 0x00, sizeof(message));
     }
 }
