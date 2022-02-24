@@ -8,9 +8,10 @@ int main(int argc, char *argv[])
         printf("argument must be required\n");
         exit(1);
     }
+    char * myip = argv[1];
 
-    manyToMany mymanyToMany(argv[1]);
-    printf("%s\n", argv[1]);
+    manyToMany mymanyToMany(myip);
+    printf("%s\n", myip);
 
     mymanyToMany.server();
     sleep(0.1);

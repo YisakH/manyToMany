@@ -13,6 +13,7 @@ bool manyToMany::has_ip(in_addr_t ip)
 manyToMany::manyToMany(string my_ip)
 {
     this->my_ip = my_ip;
+
     serv_sock = socket(PF_INET, SOCK_STREAM, 0);
     memset(&serv_addr, 0, sizeof(serv_addr));
 
@@ -26,7 +27,7 @@ manyToMany::manyToMany(string my_ip)
     /*
     client socket 생성
     */
-    for (int i = 0; i < NoOfNode - 1; i++)
+    for (int i = 0; i < NoOfNode; i++)
     {
         clnt_sock.push_back(socket(PF_INET, SOCK_STREAM, 0));
 
@@ -90,9 +91,9 @@ void manyToMany::server_run()
         if (tmp_sock == -1)
             error_handring("accept() error");
         
-        crea_conn_sock(tmp_sock, clnt_addr.sin_addr.s_addr);
+        crea_conn_sock(tmp_sock, clnt_addr.sin_addr.s_addr, true);
 
-        sleep(0.1);
+        usleep(0.1 * 1000000);
     }
 }
 
@@ -103,9 +104,11 @@ void manyToMany::client(int number_of_client)
 
     for (int i = 0; i < number_of_client; i++)
     {
+        int r_time = rand()%10;
+
         client_t.push_back(thread(&manyToMany::client_run, this, i));
         client_t[i].detach();
-        sleep(0.07);
+        usleep(r_time * 500000);
     }
 }
 
@@ -124,22 +127,25 @@ void manyToMany::client_run(int index)
     addr.sin_addr.s_addr = int_ip;
     addr.sin_port = htons(atoi(port));
 
-    bool connected;
 
     for (int i = 0; i < 100; i++)
     {
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1)
         {
-            crea_conn_sock(clnt_sock[index], int_ip);
+            crea_conn_sock(clnt_sock[index], int_ip, false);
             break;
         }
 
-        sleep(0.2);
+        usleep(1 * 1000000);
     }
 }
 
 void manyToMany::send_msg(char *msg)
 {
+    if(connect_clnt_sock.size() <= 0){
+        printf("sock size error\n");
+    }
+
     for (int i = 0; i < connect_clnt_sock.size(); i++)
     {
         write(connect_clnt_sock[i], msg, strlen(msg));
@@ -150,7 +156,7 @@ void manyToMany::send_msg(char *msg)
 }
 
 // 연결 성공한 소켓 관리 함수
-bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
+bool manyToMany::crea_conn_sock(int sock, in_addr_t ip, bool isServer)
 {
     m.lock();
 
@@ -163,7 +169,10 @@ bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
     m.unlock();
 
     char str[30];
-    printf("%s, sock : %u에 연결 성공!!\n", inet_ntop(AF_INET, &ip, str, sizeof(str)), sock);
+    const char *converted_ip = inet_ntop(AF_INET, &ip, str, sizeof(str));
+
+    printf("[%s] : %s에 %d socket으로 연결 성공!!\n",isServer ? "Server" : "Client" ,inet_ntop(AF_INET, &ip, str, sizeof(str)), sock);
+    usleep(1000000 * 0.4);
 
     thread t(&manyToMany::recv_msg, this, sock, str);
     t.detach();
@@ -174,7 +183,11 @@ bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
 void manyToMany::recv_msg(int sock, char * ip)
 {
     int read_len;
+    char saved_ip[20];
     char message[100];
+
+    strcpy(saved_ip, ip);
+    
     while (read_len = read(sock, message, sizeof(message)))
     {
         if (read_len == -1)

@@ -36,7 +36,7 @@ private:
     bool has_ip(in_addr_t ip);
     void server_run();
     void client_run(int index);
-    bool crea_conn_sock(int sock, in_addr_t ip);
+    bool crea_conn_sock(int sock, in_addr_t ip, bool isServer);
 
 
 public:
