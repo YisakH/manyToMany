@@ -14,12 +14,11 @@ int main(int argc, char *argv[])
     printf("%s\n", myip);
 
     mymanyToMany.server();
-    sleep(0.1);
+    sleep(1);
     mymanyToMany.client(NoOfNode);
-
+    sleep(1)
 
     string input = "";
-
 
     sleep(2);
 
