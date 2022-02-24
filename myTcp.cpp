@@ -72,7 +72,6 @@ void manyToMany::server()
     thread server_t(&manyToMany::server_run, this);
     cout << "server() run" << endl;
     server_t.detach();
-    //server_t.join();
 }
 
 void manyToMany::server_run()
@@ -108,8 +107,6 @@ void manyToMany::client(int number_of_client)
         client_t[i].detach();
         sleep(0.07);
     }
-
-    //for (int i = 0; i < number_of_client; i++)
 }
 
 void manyToMany::client_run(int index)
@@ -117,27 +114,26 @@ void manyToMany::client_run(int index)
     struct sockaddr_in addr;
     string ip = server_ip[index];
 
+    // 연결 시도할 ip와 본인 ip 비교
     if (my_ip == ip)
         return;
+
     in_addr_t int_ip = inet_addr(ip.c_str());
-    //printf("%u\n", int_ip);
 
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = int_ip;
-
     addr.sin_port = htons(atoi(port));
 
     bool connected;
 
-    printf("%s 에 %d 포트로 연결 시도합니다...\n", ip.c_str(), addr.sin_port);
     for (int i = 0; i < 100; i++)
     {
-
         if (connect(clnt_sock[index], (struct sockaddr *)&addr, sizeof(addr)) != -1)
         {
             crea_conn_sock(clnt_sock[index], int_ip);
             break;
         }
+
         sleep(0.2);
     }
 }
@@ -153,6 +149,7 @@ void manyToMany::send_msg(char *msg)
         exit_call();
 }
 
+// 연결 성공한 소켓 관리 함수
 bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
 {
     m.lock();
@@ -167,7 +164,6 @@ bool manyToMany::crea_conn_sock(int sock, in_addr_t ip)
 
     char str[30];
     printf("%s, sock : %u에 연결 성공!!\n", inet_ntop(AF_INET, &ip, str, sizeof(str)), sock);
-    //printf("%s\n", str);
 
     thread t(&manyToMany::recv_msg, this, sock, str);
     t.detach();

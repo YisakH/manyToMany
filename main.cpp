@@ -1,5 +1,7 @@
 #include "includes/myTcp.hpp"
 
+// 실행시 인자로 ip 줘야합니다
+// ex) ./program 192.168.0.100
 int main(int argc, char *argv[])
 {
     if(argc <= 1){
