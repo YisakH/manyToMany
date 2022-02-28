@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     mymanyToMany.server();
     sleep(1);
     mymanyToMany.client(NoOfNode);
-    sleep(1)
+    sleep(1);
 
     string input = "";
 
